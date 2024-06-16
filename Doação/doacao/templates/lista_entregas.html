@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Entregas</title>
+</head>
+<body>
+    <h1>Lista de Entrega</h1>
+    <ul>
+        {% for Entrega_Item in entregas %}
+            <li>
+                {{ Entrega_Item.produto }} - {{ Entrega_Item.unidade_medida }} - {{ Entrega_Item.quantidade }}
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                    <input type="number" name="quantidade" placeholder="Quantidade" required>
+                    <button type="submit">Incrementar</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

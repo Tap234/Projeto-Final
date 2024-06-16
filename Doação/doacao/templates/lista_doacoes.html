@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Doações</title>
+</head>
+<body>
+    <h1>Lista de Doações</h1>
+    <ul>
+        {% for doacao in doacoes %}
+            <li>{{ doacao.data }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
