@@ -11,6 +11,13 @@ class Produto(models.Model):
         self.quantidade += quantidade
         self.save()
 
+    def decrementar_quantidade(self, quantidade):
+        if self.quantidade >= quantidade:
+            self.quantidade -= quantidade
+            self.save()
+        else:
+            raise ValueError('Quantidade insuficiente em estoque')
+
 class Doacao(models.Model):
     data = models.CharField(max_length=200)
     def __str__(self):
