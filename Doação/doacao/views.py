@@ -21,19 +21,3 @@ def lista_produtos(request, acao):
 
     produtos = Produto.objects.all()
     return render(request, 'lista_produtos.html', {'produtos': produtos, 'acao': acao})
-
-
-
-def lista_entregas(request):
-    if request.method == 'POST':
-        for produto in Produto.objects.all():
-            quantidade = request.POST.get(f'quantidade_{produto.id}', None)
-            if quantidade:
-                quantidade = int(quantidade)
-                if quantidade < 0:  # Garantir que a quantidade seja negativa
-                    if produto.quantidade >= abs(quantidade):  # Verifica se há quantidade suficiente para decrementar
-                        produto.decrementar_quantidade(abs(quantidade))  # Método para decrementar a quantidade
-        return redirect('doacao:lista_entregas')  # Redireciona para a lista de entregas após decrementar
-
-    produtos = Produto.objects.all()
-    return render(request, 'lista_produtos.html', {'produtos': produtos})
