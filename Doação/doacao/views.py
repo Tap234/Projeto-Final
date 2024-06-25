@@ -6,26 +6,34 @@ from django.urls import reverse
 def inicio(request):
     return render(request, 'inicio.html')
 
-def lista_produtos(request):
+def lista_produtos(request, acao):
     if request.method == 'POST':
-        produto_id = request.POST.get('produto_id')
-        quantidade = int(request.POST.get('quantidade', 0))
-        produto = get_object_or_404(Produto, id=produto_id)
-        produto.incrementar_quantidade(quantidade)
-        return redirect('doacao:inicio')# Redireciona para a lista de produtos após incrementar
+        for produto in Produto.objects.all():
+            quantidade = request.POST.get(f'quantidade_{produto.id}', None)
+            if quantidade:
+                quantidade = int(quantidade)
+                if acao == 'aumentar' and quantidade > 0:
+                    produto.incrementar_quantidade(quantidade)
+                elif acao == 'diminuir' and quantidade < 0:
+                    if produto.quantidade >= abs(quantidade):
+                        produto.decrementar_quantidade(abs(quantidade))
+        return redirect('doacao:inicio')  # Redireciona para a mesma página após a atualização
 
     produtos = Produto.objects.all()
-    return render(request, 'lista_produtos.html', {'produtos': produtos})
+    return render(request, 'lista_produtos.html', {'produtos': produtos, 'acao': acao})
 
 
 
 def lista_entregas(request):
     if request.method == 'POST':
-        produto_id = request.POST.get('produto_id')
-        quantidade = int(request.POST.get('quantidade', 0))
-        produto = get_object_or_404(Produto, id=produto_id)
-        produto.decrementar_quantidade(quantidade)
-        return redirect('doacao:inicio')  # Redireciona para a lista de produtos após incrementar
+        for produto in Produto.objects.all():
+            quantidade = request.POST.get(f'quantidade_{produto.id}', None)
+            if quantidade:
+                quantidade = int(quantidade)
+                if quantidade < 0:  # Garantir que a quantidade seja negativa
+                    if produto.quantidade >= abs(quantidade):  # Verifica se há quantidade suficiente para decrementar
+                        produto.decrementar_quantidade(abs(quantidade))  # Método para decrementar a quantidade
+        return redirect('doacao:lista_entregas')  # Redireciona para a lista de entregas após decrementar
 
     produtos = Produto.objects.all()
     return render(request, 'lista_produtos.html', {'produtos': produtos})

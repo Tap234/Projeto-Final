@@ -2,14 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Doações</title>
+    <title>Lista de Produtos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            width: 80%;
+            max-width: 600px;
+        }
+        li {
+            background-color: #ffffff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Lista de Doações</h1>
-    <ul>
-        {% for doacao in doacoes %}
-            <li>{{ doacao.data }}</li>
-        {% endfor %}
-    </ul>
+    <h1>Lista de Produtos</h1>
+    <form method="post">
+        {% csrf_token %}
+        <ul>
+            {% for produto in produtos %}
+                <li>
+                    <div>
+                        {{ produto.descricao }} - {{ produto.unidade_medida }} - {{ produto.quantidade }}
+                    </div>
+                    <div>
+                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                        <input type="number"
+                               name="quantidade_{{ produto.id }}"
+                               placeholder="Quantidade"
+                               {% if acao == 'aumentar' %}min="0"{% elif acao == 'diminuir' %}max="0"{% endif %}
+                               >
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Salvar</button>
+    </form>
 </body>
 </html>

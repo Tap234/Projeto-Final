@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lista Entregas</title>
+    <title>Lista de Entregas</title>
 </head>
 <body>
-    <h1>Lista de Entrega</h1>
-    <ul>
-        {% for Entrega_Item in entregas %}
-            <li>
-                {{ Entrega_Item.produto }} - {{ Entrega_Item.unidade_medida }} - {{ Entrega_Item.quantidade }}
-                <form method="post" style="display: inline;">
-                    {% csrf_token %}
+    <h1>Lista de Entregas</h1>
+    <form method="post">
+        {% csrf_token %}
+        <ul>
+            {% for produto in produtos %}
+                <li>
+                    {{ produto.descricao }} - {{ produto.unidade_medida }} - {{ produto.quantidade }}
                     <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                    <input type="number" name="quantidade" placeholder="Quantidade" required>
-                    <button type="submit">Incrementar</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+                    <input type="number" name="quantidade_{{ produto.id }}" placeholder="Quantidade" min="0">
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">Salvar</button>
+    </form>
 </body>
 </html>
